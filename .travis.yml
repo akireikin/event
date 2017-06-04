@@ -6,4 +6,4 @@ install:
 script:
   - ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
 after_success:
-  - php vendor/bin/coveralls -v
+  - ./vendor/bin/coveralls -v
