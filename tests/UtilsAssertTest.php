@@ -13,15 +13,15 @@ declare(strict_types=1);
 
 namespace Akireikin\EventTest;
 
-use Akireikin\Event\Assert;
+use Akireikin\Event\UtilsAssert;
 use PHPUnit\Framework\TestCase;
 use Serializable;
 use stdClass;
 
 /**
- * @coversDefaultClass \Akireikin\Event\Assert
+ * @coversDefaultClass \Akireikin\Event\UtilsAssert
  */
-final class AssertTest extends TestCase
+final class UtilsAssertTest extends TestCase
 {
     /**
      * @test
@@ -32,7 +32,7 @@ final class AssertTest extends TestCase
     public function it_throws_exception_when_neither_class_nor_interface_given(): void
     {
         // act
-        Assert::interfaceOrClassExists('foo');
+        UtilsAssert::interfaceOrClassExists('foo');
 
         // assert - exception
     }
@@ -44,7 +44,7 @@ final class AssertTest extends TestCase
     public function it_passes_by_when_class_name_given(): void
     {
         // act
-        Assert::interfaceOrClassExists(stdClass::class);
+        UtilsAssert::interfaceOrClassExists(stdClass::class);
 
         // assert - no exception thrown
         $this->addToAssertionCount(1);
@@ -57,7 +57,7 @@ final class AssertTest extends TestCase
     public function it_passes_by_when_interface_name_given(): void
     {
         // act
-        Assert::interfaceOrClassExists(Serializable::class);
+        UtilsAssert::interfaceOrClassExists(Serializable::class);
 
         // assert - no exception thrown
         $this->addToAssertionCount(1);

@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Akireikin\Event;
 
-class Assert extends \Webmozart\Assert\Assert
+use Webmozart\Assert\Assert;
+
+class UtilsAssert extends Assert
 {
     /**
      * Interface or class exists.

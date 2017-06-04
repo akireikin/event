@@ -43,7 +43,6 @@ final class DispatcherTest extends TestCase
      * @test
      * @covers ::addListener
      * @covers ::dispatch
-     * @uses \Akireikin\Event\Assert
      */
     public function it_can_add_listener_and_dispatch_event(): void
     {
@@ -70,7 +69,6 @@ final class DispatcherTest extends TestCase
     /**
      * @test
      * @covers ::addListener
-     * @uses \Akireikin\Event\Assert
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Expected $eventClass to be an existing class or interface name. Got: "foo"
      */
@@ -88,7 +86,6 @@ final class DispatcherTest extends TestCase
     /**
      * @test
      * @covers ::addListener
-     * @uses \Akireikin\Event\Assert
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Expected $listenerClass to be an existing class or interface name. Got: "foo"
      */
@@ -106,7 +103,6 @@ final class DispatcherTest extends TestCase
     /**
      * @test
      * @covers ::addListener
-     * @uses \Akireikin\Event\Assert
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Expected the method "__invoke" to exist in "stdClass"
      */
