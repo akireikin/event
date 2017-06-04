@@ -15,7 +15,7 @@ namespace Akireikin\Event;
 
 use Webmozart\Assert\Assert;
 
-class UtilsAssert extends Assert
+class AssertUtils extends Assert
 {
     /**
      * Interface or class exists.
