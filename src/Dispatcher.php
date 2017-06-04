@@ -47,6 +47,10 @@ class Dispatcher
      */
     public function addListener(string $eventClass, string $listenerClass): self
     {
+        Assert::interfaceOrClassExists($eventClass,'Expected $eventClass to be an existing class or interface name. Got: %s');
+        Assert::interfaceOrClassExists($listenerClass, 'Expected $listenerClass to be an existing class or interface name. Got: %s');
+        Assert::methodExists($listenerClass, '__invoke', "Expected the method %s to exist in \"$listenerClass\"");
+
         $this->listenerClasses[$eventClass][] = $listenerClass;
 
         return $this;

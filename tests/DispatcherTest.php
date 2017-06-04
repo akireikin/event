@@ -16,13 +16,36 @@ namespace Akireikin\EventTest;
 use Akireikin\Event\Dispatcher;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use stdClass;
 
+/**
+ * @coversDefaultClass \Akireikin\Event\Dispatcher
+ */
 final class DispatcherTest extends TestCase
 {
     /**
      * @test
+     * @covers ::__construct
      */
-    public function it_can_add_listener_and_then_dispatch_event(): void
+    public function it_can_be_constructed(): void
+    {
+        // arrange
+        $container = $this->mockContainer();
+
+        // act
+        new Dispatcher($container);
+
+        // assert - exception thrown
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @test
+     * @covers ::addListener
+     * @covers ::dispatch
+     * @uses \Akireikin\Event\Assert
+     */
+    public function it_can_add_listener_and_dispatch_event(): void
     {
         // arrange
         $event = $this->mockEvent();
@@ -46,8 +69,63 @@ final class DispatcherTest extends TestCase
 
     /**
      * @test
+     * @covers ::addListener
+     * @uses \Akireikin\Event\Assert
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Expected $eventClass to be an existing class or interface name. Got: "foo"
      */
-    public function it_does_not_throw_exception_when_no_listener_added(): void
+    public function it_cannot_add_listener_when_event_class_is_invalid(): void
+    {
+        // arrange
+        $dispatcher = new Dispatcher($this->mockContainer());
+
+        // act
+        $dispatcher->addListener('foo', stdClass::class);
+
+        // assert - exception thrown
+    }
+
+    /**
+     * @test
+     * @covers ::addListener
+     * @uses \Akireikin\Event\Assert
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Expected $listenerClass to be an existing class or interface name. Got: "foo"
+     */
+    public function it_cannot_add_listener_when_listener_class_is_invalid(): void
+    {
+        // arrange
+        $dispatcher = new Dispatcher($this->mockContainer());
+
+        // act
+        $dispatcher->addListener(stdClass::class, 'foo');
+
+        // assert - exception thrown
+    }
+
+    /**
+     * @test
+     * @covers ::addListener
+     * @uses \Akireikin\Event\Assert
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Expected the method "__invoke" to exist in "stdClass"
+     */
+    public function it_cannot_add_listener_when_listener_class_is_not_callable(): void
+    {
+        // arrange
+        $dispatcher = new Dispatcher($this->mockContainer());
+
+        // act
+        $dispatcher->addListener(stdClass::class, stdClass::class);
+
+        // assert - exception thrown
+    }
+
+    /**
+     * @test
+     * @covers ::dispatch
+     */
+    public function it_can_dispatch_event_when_no_listener_added(): void
     {
         // arrange
         $dispatcher = new Dispatcher($this->mockContainer());
