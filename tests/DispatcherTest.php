@@ -15,8 +15,9 @@ namespace Akireikin\EventTest;
 
 use Akireikin\Event\Dispatcher;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
-class DispatcherTest extends TestCase
+final class DispatcherTest extends TestCase
 {
     /**
      * @test
@@ -24,16 +25,15 @@ class DispatcherTest extends TestCase
     public function it_can_add_listener_and_then_dispatch_event(): void
     {
         // arrange
-        $dispatcher = new Dispatcher();
-        $event = new class() {
-            public $wasHandled = false;
-        };
-        $listener = new class() {
-            public function __invoke($event): void
-            {
-                $event->wasHandled = true;
-            }
-        };
+        $event = $this->mockEvent();
+        $listener = $this->mockListener();
+        $container = $this->mockContainer();
+        $container
+            ->expects($this->once())
+            ->method('get')
+            ->with(get_class($listener))
+            ->willReturn($listener);
+        $dispatcher = new Dispatcher($container);
 
         // act
         $dispatcher
@@ -42,5 +42,57 @@ class DispatcherTest extends TestCase
 
         // assert
         self::assertTrue($event->wasHandled);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_throw_exception_when_no_listener_added(): void
+    {
+        // arrange
+        $dispatcher = new Dispatcher($this->mockContainer());
+
+        // act
+        $dispatcher->dispatch((object) []);
+
+        // assert - no exception thrown
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * Mock event.
+     *
+     * @return object
+     */
+    private function mockEvent()
+    {
+        return new class() {
+            public $wasHandled = false;
+        };
+    }
+
+    /**
+     * Mock listener.
+     *
+     * @return callable
+     */
+    private function mockListener(): callable
+    {
+        return new class() {
+            public function __invoke($event): void
+            {
+                $event->wasHandled = true;
+            }
+        };
+    }
+
+    /**
+     * Mock container.
+     *
+     * @return \Psr\Container\ContainerInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockContainer(): ContainerInterface
+    {
+        return $this->createMock(ContainerInterface::class);
     }
 }

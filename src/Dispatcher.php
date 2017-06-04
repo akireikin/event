@@ -13,12 +13,32 @@ declare(strict_types=1);
 
 namespace Akireikin\Event;
 
+use Psr\Container\ContainerInterface;
+
 class Dispatcher
 {
-    private $listeners = [];
+    /**
+     * @var array
+     */
+    private $listenerClasses = [];
 
     /**
-     * Add Listener to event.
+     * @var \Psr\Container\ContainerInterface
+     */
+    private $container;
+
+    /**
+     * Constructor.
+     *
+     * @param \Psr\Container\ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * Add listener to event.
      *
      * @param string $eventClass
      * @param string $listenerClass
@@ -27,7 +47,7 @@ class Dispatcher
      */
     public function addListener(string $eventClass, string $listenerClass): self
     {
-        $this->listeners[$eventClass][] = $listenerClass;
+        $this->listenerClasses[$eventClass][] = $listenerClass;
 
         return $this;
     }
@@ -41,8 +61,10 @@ class Dispatcher
      */
     public function dispatch($event): self
     {
-        foreach ($this->listeners[get_class($event)] as $listener) {
-            (new $listener())($event);
+        $eventClass = get_class($event);
+        foreach ($this->listenerClasses[$eventClass] ?? [] as $listenerClass) {
+            $listener = $this->container->get($listenerClass);
+            $listener($event);
         }
 
         return $this;
