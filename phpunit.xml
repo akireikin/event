@@ -10,6 +10,7 @@
          stopOnFailure="false"
          syntaxCheck="true"
          verbose="true"
+         bootstrap="vendor/autoload.php"
 >
     <testsuites>
         <testsuite name="Event Test Suite">
